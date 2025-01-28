@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services.auth_service import AuthService
 
-
 auth_blueprint = Blueprint('auth', __name__)
 
 @auth_blueprint.route('/login', methods=['POST'])
