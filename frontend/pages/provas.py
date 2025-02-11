@@ -6,6 +6,7 @@ def show():
     st.markdown("---")
 
     if 'token' not in st.session_state:
+        
         st.error("Você precisa estar logado para acessar esta página.")
         return
 
