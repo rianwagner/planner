@@ -1,0 +1,429 @@
+openapi: 3.0.0
+info:
+  title: API Acadêmica
+  description: API para gerenciamento de autenticação, matérias, provas e trabalhos.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Servidor local de desenvolvimento
+paths:
+  /login:
+    post:
+      summary: Realiza o login do usuário
+      description: Retorna um token de acesso se as credenciais estiverem corretas.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "usuario123"
+                password:
+                  type: string
+                  example: "senha123"
+      responses:
+        '200':
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Campos obrigatórios faltando
+        '401':
+          description: Credenciais inválidas
+        '500':
+          description: Erro interno no servidor
+
+  /register:
+    post:
+      summary: Registra um novo usuário
+      description: Cria um novo usuário com username e senha.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "novousuario"
+                password:
+                  type: string
+                  example: "novasenha"
+      responses:
+        '201':
+          description: Usuário registrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Usuário cadastrado com sucesso"
+        '400':
+          description: Campos obrigatórios faltando ou usuário já existe
+        '500':
+          description: Erro interno no servidor
+
+  /materias:
+    get:
+      summary: Lista todas as matérias
+      description: Retorna uma lista de todas as matérias cadastradas.
+      responses:
+        '200':
+          description: Lista de matérias
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    nome:
+                      type: string
+                      example: "Matemática"
+        '500':
+          description: Erro interno no servidor
+    post:
+      summary: Cria uma nova matéria
+      description: Cria uma nova matéria com o nome fornecido.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: "Física"
+      responses:
+        '201':
+          description: Matéria criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 2
+                  nome:
+                    type: string
+                    example: "Física"
+        '400':
+          description: Campo 'nome' é obrigatório
+        '500':
+          description: Erro interno no servidor
+
+  /materias/{id}:
+    get:
+      summary: Obtém uma matéria pelo ID
+      description: Retorna os detalhes de uma matéria específica.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalhes da matéria
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nome:
+                    type: string
+                    example: "Matemática"
+        '404':
+          description: Matéria não encontrada
+        '500':
+          description: Erro interno no servidor
+    delete:
+      summary: Deleta uma matéria pelo ID
+      description: Remove uma matéria do sistema.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Matéria deletada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Matéria deletada com sucesso"
+        '404':
+          description: Matéria não encontrada
+        '500':
+          description: Erro interno no servidor
+
+  /provas:
+    get:
+      summary: Lista todas as provas
+      description: Retorna uma lista de todas as provas cadastradas.
+      responses:
+        '200':
+          description: Lista de provas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    titulo:
+                      type: string
+                      example: "Prova 1"
+                    materia_id:
+                      type: integer
+                      example: 1
+        '500':
+          description: Erro interno no servidor
+    post:
+      summary: Cria uma nova prova
+      description: Cria uma nova prova com os dados fornecidos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                  example: "Prova 1"
+                descricao:
+                  type: string
+                  example: "Prova sobre matemática básica"
+                data:
+                  type: string
+                  format: date
+                  example: "2023-10-15"
+                materia_id:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Prova criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  titulo:
+                    type: string
+                    example: "Prova 1"
+        '400':
+          description: Campos obrigatórios faltando
+        '500':
+          description: Erro interno no servidor
+
+  /provas/{id}:
+    get:
+      summary: Obtém uma prova pelo ID
+      description: Retorna os detalhes de uma prova específica.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalhes da prova
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  titulo:
+                    type: string
+                    example: "Prova 1"
+                  materia_id:
+                    type: integer
+                    example: 1
+        '404':
+          description: Prova não encontrada
+        '500':
+          description: Erro interno no servidor
+    delete:
+      summary: Deleta uma prova pelo ID
+      description: Remove uma prova do sistema.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Prova deletada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Prova deletada com sucesso"
+        '404':
+          description: Prova não encontrada
+        '500':
+          description: Erro interno no servidor
+
+  /trabalhos:
+    get:
+      summary: Lista todos os trabalhos
+      description: Retorna uma lista de todos os trabalhos cadastrados.
+      responses:
+        '200':
+          description: Lista de trabalhos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    titulo:
+                      type: string
+                      example: "Trabalho 1"
+                    materia_id:
+                      type: integer
+                      example: 1
+        '500':
+          description: Erro interno no servidor
+    post:
+      summary: Cria um novo trabalho
+      description: Cria um novo trabalho com os dados fornecidos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                  example: "Trabalho 1"
+                descricao:
+                  type: string
+                  example: "Trabalho sobre física"
+                data_entrega:
+                  type: string
+                  format: date
+                  example: "2023-10-20"
+                materia_id:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Trabalho criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  titulo:
+                    type: string
+                    example: "Trabalho 1"
+        '400':
+          description: Campos obrigatórios faltando
+        '500':
+          description: Erro interno no servidor
+
+  /trabalhos/{id}:
+    get:
+      summary: Obtém um trabalho pelo ID
+      description: Retorna os detalhes de um trabalho específico.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalhes do trabalho
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  titulo:
+                    type: string
+                    example: "Trabalho 1"
+                  materia_id:
+                    type: integer
+                    example: 1
+        '404':
+          description: Trabalho não encontrado
+        '500':
+          description: Erro interno no servidor
+    delete:
+      summary: Deleta um trabalho pelo ID
+      description: Remove um trabalho do sistema.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trabalho deletado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Trabalho deletado com sucesso"
+        '404':
+          description: Trabalho não encontrado
+        '500':
+          description: Erro interno no servidor
