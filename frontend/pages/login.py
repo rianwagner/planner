@@ -6,11 +6,10 @@ def show():
     st.markdown("---")
     st.subheader("Login")
 
-    # Layout em colunas para organizar o formulário
     col1, col2 = st.columns([1, 2])
 
     with col1:
-        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=100)  # Ícone de usuário
+        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=200)
 
     with col2:
         username = st.text_input("Usuário", placeholder="Digite seu usuário")
@@ -25,7 +24,7 @@ def show():
                 if response.status_code == 200:
                     st.session_state.token = response.json().get("access_token")
                     st.success("Login realizado com sucesso!")
-                    st.rerun()  # Recarrega a página após o login
+                    st.rerun()
                 else:
                     st.error("Usuário ou senha incorretos")
             else:

@@ -9,7 +9,7 @@ def show():
     col1, col2 = st.columns([1, 2])
 
     with col1:
-        st.image("https://cdn-icons-png.flaticon.com/512/747/747545.png", width=100)  # Ícone de registro
+        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=200)
 
     with col2:
         username = st.text_input("Usuário", placeholder="Digite seu usuário")
