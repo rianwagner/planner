@@ -1,13 +1,17 @@
 from flask import request, jsonify, Blueprint
 from ..services.trabalho_service import TrabalhoService
 from datetime import datetime
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 trabalho_blueprint = Blueprint('trabalho', __name__)
 
 @trabalho_blueprint.route('/trabalhos', methods=['GET'])
+@jwt_required()
 def listar_trabalhos():
     try:
-        trabalhos = TrabalhoService.get_all_trabalhos()
+        user_id = get_jwt_identity()
+        trabalhos = TrabalhoService.get_materias_by_user(user_id)
         return jsonify([{
             "id": trabalho.id,
             "titulo": trabalho.titulo,
@@ -36,6 +40,7 @@ def obter_trabalho(id):
         return jsonify({"message": "Erro interno no servidor"}), 500
 
 @trabalho_blueprint.route('/trabalhos', methods=['POST'])
+@jwt_required()
 def criar_trabalho():
     data = request.json
     titulo = data.get('titulo')
@@ -49,7 +54,8 @@ def criar_trabalho():
     try:
         if data_entrega:
             data_entrega = datetime.fromisoformat(data_entrega).date()
-        trabalho = TrabalhoService.create_trabalho(titulo, descricao, data_entrega, materia_id)
+        user_id = get_jwt_identity()
+        trabalho = TrabalhoService.create_trabalho(titulo, descricao, data_entrega, materia_id,  user_id)
         return jsonify({
             "id": trabalho.id,
             "titulo": trabalho.titulo,

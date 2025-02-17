@@ -1,7 +1,13 @@
 from ..models.materia_model import Materia
 from ..repositories.materia_repository import MateriaRepository
+from flask_jwt_extended import get_jwt_identity
+
 
 class MateriaService:
+
+    @staticmethod
+    def get_materias_by_user(user_id):
+        return Materia.query.filter_by(user_id=user_id).all()
     @staticmethod
     def get_all_materias():
         try:
@@ -23,7 +29,8 @@ class MateriaService:
         if not nome:
             raise ValueError("O campo 'nome' é obrigatório")
         try:
-            nova_materia = Materia(nome=nome)
+            user_id = get_jwt_identity()
+            nova_materia = Materia(nome=nome, user_id=user_id)
             return MateriaRepository.save(nova_materia)
         except Exception as e:
             print(f"Erro ao criar matéria: {e}")

@@ -1,12 +1,16 @@
 from flask import request, jsonify, Blueprint
 from ..services.materia_service import MateriaService
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 materia_blueprint = Blueprint('materia', __name__)
 
 @materia_blueprint.route('/materias', methods=['GET'])
+@jwt_required()
 def listar_materias():
     try:
-        materias = MateriaService.get_all_materias()
+        user_id = get_jwt_identity()
+        materias = MateriaService.get_materias_by_user(user_id)
         return jsonify([{"id": materia.id, "nome": materia.nome} for materia in materias]), 200
     except Exception as e:
         return jsonify({"message": "Erro interno no servidor"}), 500
@@ -23,6 +27,7 @@ def obter_materia(id):
         return jsonify({"message": "Erro interno no servidor"}), 500
 
 @materia_blueprint.route('/materias', methods=['POST'])
+@jwt_required()
 def criar_materia():
     nome = request.json.get('nome')
     if not nome:

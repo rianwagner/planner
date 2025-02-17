@@ -6,15 +6,10 @@ from ..models.user_model import User
 class AuthService:
     @staticmethod
     def login(username, password):
-        try:
-            user = UserRepository.get_by_username(username)
-            if user and check_password_hash(user.password, password):
-                token = create_access_token(identity=user.id)
-                return token
-            return None 
-        except Exception as e:
-            print(f"Erro durante o login: {e}")
-            return None
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            return user
+        return None
     
     @staticmethod
     def register(username, password):

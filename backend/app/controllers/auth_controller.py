@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services.auth_service import AuthService
+from flask_jwt_extended import create_access_token
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -11,9 +12,10 @@ def login():
     if not username or not password:
         return jsonify({"msg": "Username e password são obrigatórios"}), 400
 
-    token = AuthService.login(username, password)
-    if token:
-        return jsonify(access_token=token), 200
+    user = AuthService.login(username, password)
+    if user:
+        access_token = create_access_token(identity=user.id)  # Agora vai funcionar!
+        return jsonify(access_token=access_token), 200
     return jsonify({"msg": "Bad username or password"}), 401
 
 @auth_blueprint.route('/register', methods=['POST'])

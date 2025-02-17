@@ -1,7 +1,13 @@
 from ..models.prova_model import Prova
 from ..repositories.prova_repository import ProvaRepository
+from flask_jwt_extended import get_jwt_identity
+from datetime import datetime
 
 class ProvaService:
+
+    @staticmethod
+    def get_provas_by_user(user_id):
+        return Prova.query.filter_by(user_id=user_id).all()
     @staticmethod
     def get_all_provas():
         try:
@@ -23,8 +29,13 @@ class ProvaService:
         if not titulo or not materia_id:
             raise ValueError("Campos 'titulo' e 'materia_id' são obrigatórios")
         try:
-            nova_prova = Prova(titulo=titulo, descricao=descricao, data=data, materia_id=materia_id)
+            user_id = get_jwt_identity()
+            data_prova = datetime.strptime(data, '%Y-%m-%d').date()
+            nova_prova = Prova(titulo=titulo, descricao=descricao, data_prova=data_prova, materia_id=materia_id, user_id=user_id)
             return ProvaRepository.save(nova_prova)
+        except ValueError as ve:
+            print(f"Formato de data inválido: {ve}")
+            raise ValueError("Data deve estar no formato 'YYYY-MM-DD'")
         except Exception as e:
             print(f"Erro ao criar prova: {e}")
             return None
