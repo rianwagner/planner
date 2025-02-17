@@ -72,7 +72,7 @@ def show():
                         "data_entrega": edit_data_entrega.isoformat(),
                         "materia_id": edit_materia_id
                     },
-                    headers=headers
+                    headers = {"Authorization": f"Bearer {token}"}
                 )
                 if response.status_code == 200:
                     st.success("Trabalho atualizado!")

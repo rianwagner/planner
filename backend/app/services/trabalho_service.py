@@ -48,3 +48,15 @@ class TrabalhoService:
         except Exception as e:
             print(f"Erro ao deletar trabalho: {e}")
             return False
+        
+    @staticmethod
+    def update_trabalho(trabalho, titulo, descricao, data_entrega, materia_id):
+        try:
+            trabalho.titulo = titulo
+            trabalho.descricao = descricao
+            trabalho.data_entrega = data_entrega
+            trabalho.materia_id = materia_id
+            return TrabalhoRepository.save(trabalho) 
+        except Exception as e:
+            print(f"Erro ao atualizar trabalho: {e}")
+            return None
