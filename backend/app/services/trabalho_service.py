@@ -5,8 +5,9 @@ from flask_jwt_extended import get_jwt_identity
 class TrabalhoService:
 
     @staticmethod
-    def get_provas_by_user(user_id):
+    def get_trabalhos_by_user(user_id):
         return Trabalho.query.filter_by(user_id=user_id).all()
+    
     @staticmethod
     def get_all_trabalhos():
         try:
@@ -24,12 +25,17 @@ class TrabalhoService:
             return None
 
     @staticmethod
-    def create_trabalho(titulo, descricao, data_entrega, materia_id):
-        if not titulo or not materia_id:
-            raise ValueError("Campos 'titulo' e 'materia_id' são obrigatórios")
+    def create_trabalho(titulo, descricao, data_entrega, materia_id, user_id):  # Adicione user_id
+        if not titulo or not materia_id or not user_id:
+            raise ValueError("Campos 'titulo', 'materia_id' e 'user_id' são obrigatórios")
         try:
-            user_id = get_jwt_identity()
-            novo_trabalho = Trabalho(titulo=titulo, descricao=descricao, data_entrega=data_entrega, materia_id=materia_id, user_id=user_id)
+            novo_trabalho = Trabalho(
+                titulo=titulo, 
+                descricao=descricao, 
+                data_entrega=data_entrega, 
+                materia_id=materia_id, 
+                user_id=user_id
+            )
             return TrabalhoRepository.save(novo_trabalho)
         except Exception as e:
             print(f"Erro ao criar trabalho: {e}")

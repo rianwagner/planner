@@ -1,5 +1,6 @@
 from flask import request, jsonify, Blueprint
 from ..services.trabalho_service import TrabalhoService
+from ..repositories.trabalho_repository import TrabalhoRepository
 from datetime import datetime
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -11,7 +12,7 @@ trabalho_blueprint = Blueprint('trabalho', __name__)
 def listar_trabalhos():
     try:
         user_id = get_jwt_identity()
-        trabalhos = TrabalhoService.get_materias_by_user(user_id)
+        trabalhos = TrabalhoService.get_trabalhos_by_user(user_id) 
         return jsonify([{
             "id": trabalho.id,
             "titulo": trabalho.titulo,
@@ -53,9 +54,15 @@ def criar_trabalho():
 
     try:
         if data_entrega:
-            data_entrega = datetime.fromisoformat(data_entrega).date()
+            data_entrega = datetime.fromisoformat(data_entrega)
         user_id = get_jwt_identity()
-        trabalho = TrabalhoService.create_trabalho(titulo, descricao, data_entrega, materia_id,  user_id)
+        trabalho = TrabalhoService.create_trabalho(
+            titulo=titulo, 
+            descricao=descricao, 
+            data_entrega=data_entrega, 
+            materia_id=materia_id, 
+            user_id=user_id
+            )
         return jsonify({
             "id": trabalho.id,
             "titulo": trabalho.titulo,
@@ -76,3 +83,29 @@ def deletar_trabalho(id):
             return jsonify({"message": "Trabalho não encontrado"}), 404
     except Exception as e:
         return jsonify({"message": "Erro interno no servidor"}), 500
+    
+@trabalho_blueprint.route('/trabalhos/<int:id>', methods=['PUT'])
+@jwt_required()
+def atualizar_trabalho(id):
+    data = request.json
+    try:
+        trabalho = TrabalhoService.get_trabalho_by_id(id)
+        if not trabalho:
+            return jsonify({"message": "Trabalho não encontrado"}), 404
+        
+        # Atualize os campos necessários
+        trabalho.titulo = data.get('titulo', trabalho.titulo)
+        trabalho.descricao = data.get('descricao', trabalho.descricao)
+        trabalho.data_entrega = datetime.fromisoformat(data.get('data_entrega')) 
+        trabalho.materia_id = data.get('materia_id', trabalho.materia_id)
+        
+        TrabalhoRepository.save(trabalho)
+        return jsonify({
+            "id": trabalho.id,
+            "titulo": trabalho.titulo,
+            "descricao": trabalho.descricao,
+            "data_entrega": trabalho.data_entrega.isoformat(),
+            "materia_id": trabalho.materia_id
+        }), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
