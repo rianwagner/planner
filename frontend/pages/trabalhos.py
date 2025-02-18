@@ -26,7 +26,6 @@ def show():
                     Data: {trabalho['data_entrega']}  
                     Matéria ID: {trabalho['materia_id']}
                     """)
-                    st.markdown("---")
                     
                     col1, col2 = st.columns([1, 5])
                     with col1:
@@ -48,6 +47,7 @@ def show():
                                 st.rerun()
                             else:
                                 st.error("Erro ao excluir trabalho.")
+                    st.markdown("---")
                     
         else:
             st.warning("Nenhum trabalho encontrado.")
@@ -101,6 +101,7 @@ def show():
                 )
                 if response.status_code == 201:
                     st.success("Trabalho adicionado com sucesso!")
+                    st.rerun()
                 else:
                     st.error("Erro ao adicionar trabalho.")
             else:

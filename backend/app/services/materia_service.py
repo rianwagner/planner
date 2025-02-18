@@ -17,7 +17,7 @@ class MateriaService:
             return []
 
     @staticmethod
-    def get_materia_by_id(id):
+    def get_by_id(id):
         try:
             return MateriaRepository.get_by_id(id)
         except Exception as e:

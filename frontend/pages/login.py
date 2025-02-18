@@ -29,3 +29,6 @@ def show():
                     st.error("Usuário ou senha incorretos")
             else:
                 st.warning("Preencha todos os campos!")
+    st.markdown(
+            "[Registre-se aqui!](pages/register)", unsafe_allow_html=True
+        )

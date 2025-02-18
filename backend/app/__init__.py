@@ -22,15 +22,16 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-
     from app.controllers.auth_controller import auth_blueprint
     from app.controllers.materia_controller import materia_blueprint
     from app.controllers.trabalho_controller import trabalho_blueprint
     from app.controllers.prova_controller import prova_blueprint
+    from app.controllers.relatorio_controller import relatorio_blueprint
 
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
     app.register_blueprint(materia_blueprint, url_prefix='/api')
     app.register_blueprint(trabalho_blueprint, url_prefix='/api')
     app.register_blueprint(prova_blueprint, url_prefix='/api')
+    app.register_blueprint(relatorio_blueprint, url_prefix='/api')
 
     return app
