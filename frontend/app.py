@@ -1,13 +1,27 @@
 import streamlit as st
-from pages import login, relatorio, materias, trabalhos, provas
+from pages import login, register, relatorio, materias, trabalhos, provas
 
 def logout():
-    del st.session_state['token']
+    for key in ['token', 'show_register']:
+        if key in st.session_state:
+            del st.session_state[key]
     st.success("Você foi desconectado!")
     st.rerun()
 
+if 'show_register' not in st.session_state:
+    st.session_state.show_register = False
+
 if 'token' not in st.session_state:
-    login.show()
+    if st.session_state.show_register:
+        register.show()
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        if st.button("Faça login!", type="secondary"):
+            st.session_state.show_register = False
+            st.rerun()
+    else:
+        login.show()
 else:
     if st.button("🚪 Sair"):
         logout()

@@ -29,6 +29,9 @@ def show():
                     st.error("Usuário ou senha incorretos")
             else:
                 st.warning("Preencha todos os campos!")
-    st.markdown(
-            "[Registre-se aqui!](pages/register)", unsafe_allow_html=True
-        )
+
+        st.markdown('<div style="margin: 15px 0;"></div>', unsafe_allow_html=True)
+        
+        if st.button("Registre-se aqui!", type="secondary"):
+            st.session_state.show_register = True
+            st.rerun()
