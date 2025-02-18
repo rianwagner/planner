@@ -43,3 +43,12 @@ class MateriaService:
         except Exception as e:
             print(f"Erro ao deletar matéria: {e}")
             return False
+        
+    @staticmethod
+    def update_materia(materia, nome):
+        try:
+            materia.nome = nome
+            return MateriaRepository.save(materia)
+        except Exception as e:
+            print(f"Erro ao atualizar matéria: {e}")
+            return None

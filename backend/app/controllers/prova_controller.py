@@ -2,6 +2,7 @@ from flask import request, jsonify, Blueprint
 from ..services.prova_service import ProvaService
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from datetime import datetime
 
 prova_blueprint = Blueprint('prova', __name__)
 
@@ -62,3 +63,39 @@ def deletar_prova(id):
             return jsonify({"message": "Prova não encontrada"}), 404
     except Exception as e:
         return jsonify({"message": "Erro interno no servidor"}), 500
+    
+@prova_blueprint.route('/provas/<int:id>', methods=['PUT'])
+@jwt_required()
+def atualizar_prova(id):
+    data = request.json
+    try:
+        user_id = get_jwt_identity()
+        prova = ProvaService.get_prova_by_id(id)
+        if not prova or prova.user_id != user_id:
+            return jsonify({"message": "Prova não encontrada ou acesso negado"}), 404
+        data_prova = data.get('data')
+        if not data_prova.endswith('T00:00:00'):
+            data_prova += 'T00:00:00'
+        nova_data = datetime.fromisoformat(data_prova)
+
+        prova_atualizado = ProvaService.update_prova(
+            prova=prova,
+            titulo=data.get('titulo'),
+            descricao=data.get('descricao'),
+            data_entrega=nova_data,
+            materia_id=data.get('materia_id')
+        )
+        if prova_atualizado:
+            return jsonify({
+                "id": prova.id,
+                "titulo": prova.titulo,
+                "descricao": prova.descricao,
+                "data_entrega": prova.data_prova.isoformat(),
+                "materia_id": prova.materia_id
+            }), 200
+        else:
+            return jsonify({"message": "Falha na atualização"}), 500
+    except ValueError as ve:
+        return jsonify({"message": f"Formato de data inválido: {ve}"}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500

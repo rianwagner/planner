@@ -47,3 +47,15 @@ class ProvaService:
         except Exception as e:
             print(f"Erro ao deletar prova: {e}")
             return False
+        
+    @staticmethod
+    def update_prova(prova, titulo, descricao, data, materia_id):
+        try:
+            prova.titulo = titulo
+            prova.descricao = descricao
+            prova.data_entrega = data
+            prova.materia_id = materia_id
+            return ProvaRepository.save(prova) 
+        except Exception as e:
+            print(f"Erro ao atualizar prova: {e}")
+            return None

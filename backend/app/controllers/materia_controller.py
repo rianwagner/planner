@@ -40,6 +40,7 @@ def criar_materia():
         return jsonify({"message": "Erro interno no servidor"}), 500
 
 @materia_blueprint.route('/materias/<int:id>', methods=['DELETE'])
+@jwt_required()
 def deletar_materia(id):
     try:
         success = MateriaService.delete_materia(id)
@@ -48,4 +49,27 @@ def deletar_materia(id):
         else:
             return jsonify({"message": "Matéria não encontrada"}), 404
     except Exception as e:
+        return jsonify({"message": "Erro interno no servidor"}), 500
+    
+@materia_blueprint.route('/materias/<int:id>', methods=['PUT'])
+@jwt_required()
+def atualizar_materia(id):
+    try:
+        data = request.get_json()
+        nome = data.get('nome')
+
+        if not nome:
+            return jsonify({"message": "O campo 'nome' é obrigatório"}), 400
+
+        materia = MateriaService.get_by_id(id)
+        if not materia:
+            return jsonify({"message": "Matéria não encontrada"}), 404
+
+        materia_atualizada = MateriaService.update_materia(materia, nome)
+        if materia_atualizada:
+            return jsonify({"message": "Matéria atualizada com sucesso"}), 200
+        else:
+            return jsonify({"message": "Erro ao atualizar a matéria"}), 500
+    except Exception as e:
+        print(f"Erro ao atualizar matéria: {e}")
         return jsonify({"message": "Erro interno no servidor"}), 500

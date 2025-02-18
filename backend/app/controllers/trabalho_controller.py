@@ -74,6 +74,7 @@ def criar_trabalho():
         return jsonify({"message": "Erro interno no servidor"}), 500
 
 @trabalho_blueprint.route('/trabalhos/<int:id>', methods=['DELETE'])
+@jwt_required()
 def deletar_trabalho(id):
     try:
         success = TrabalhoService.delete_trabalho(id)
