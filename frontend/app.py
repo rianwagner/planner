@@ -1,7 +1,6 @@
 import streamlit as st
 from pages import login, relatorio, materias, trabalhos, provas
 
-# Função para realizar o logout
 def logout():
     del st.session_state['token']
     st.success("Você foi desconectado!")

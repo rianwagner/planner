@@ -54,7 +54,6 @@ def show():
     else:
         st.error("Erro ao carregar provas.")
     
-    # Formulário de edição
     if 'editando_prova_id' in st.session_state:
         st.subheader("Editar Prova")
         with st.form(key="edit_prova_form"):
@@ -81,7 +80,6 @@ def show():
                 else:
                     st.error("Erro ao atualizar.")
     
-    # Formulário para adicionar prova
     st.subheader("Adicionar Prova")
     with st.form(key="add_prova_form"):
         titulo = st.text_input("Título da Prova", placeholder="Digite o título")

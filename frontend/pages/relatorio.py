@@ -13,7 +13,6 @@ def show():
     token = st.session_state.token
     headers = {"Authorization": f"Bearer {token}"}
 
-    # Filtros de data
     col1, col2 = st.columns(2)
     with col1:
         data_inicio = st.date_input("Data Início", 
@@ -53,7 +52,6 @@ def show():
                         else:
                             st.info("Nenhuma prova encontrada para o período selecionado.")
                         
-                        # Seção de Trabalhos
                         if 'trabalhos' in materia and materia['trabalhos']:
                             st.subheader("📘 Trabalhos")
                             for trabalho in materia['trabalhos']:

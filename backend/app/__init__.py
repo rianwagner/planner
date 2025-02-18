@@ -9,7 +9,7 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.config['JWT_SECRET_KEY'] = 'segredo'  # Use uma chave segura em produção
+    app.config['JWT_SECRET_KEY'] = 'segredo'
     jwt = JWTManager(app)
     CORS(app)
     app.config['SWAGGER'] = {

@@ -12,7 +12,6 @@ def show():
     token = st.session_state.token
     headers = {"Authorization": f"Bearer {token}"}
 
-    # Lista de matérias
     st.subheader("Lista de Matérias")
     response = requests.get("http://localhost:5000/materias", headers=headers)
     if response.status_code == 200:
@@ -48,7 +47,6 @@ def show():
     else:
         st.error("Erro ao carregar matérias.")
 
-    # Formulário de edição
     if 'editando_materia_id' in st.session_state:
         st.subheader("Editar Matéria")
         with st.form(key="edit_materia_form"):
@@ -69,7 +67,6 @@ def show():
                 else:
                     st.error("Erro ao atualizar matéria.")
     
-    # Adicionar nova matéria
     st.subheader("Adicionar Matéria")
     with st.form(key="add_materia_form"):
         nome = st.text_input("Nome da Matéria", placeholder="Digite o nome da matéria")

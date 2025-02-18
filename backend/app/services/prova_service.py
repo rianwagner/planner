@@ -57,7 +57,7 @@ class ProvaService:
                     data = datetime.fromisoformat(data).date()
                 else:
                     data = datetime.strptime(data, '%Y-%m-%d').date()
-            prova.data_prova = data  # Corrigido de data_entrega para data_prova
+            prova.data_prova = data
             prova.materia_id = materia_id
             return ProvaRepository.save(prova)
         except Exception as e:

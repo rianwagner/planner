@@ -14,7 +14,7 @@ def login():
 
     user = AuthService.login(username, password)
     if user:
-        access_token = create_access_token(identity=user.id)  # Agora vai funcionar!
+        access_token = create_access_token(identity=user.id)
         return jsonify(access_token=access_token), 200
     return jsonify({"msg": "Bad username or password"}), 401
 
